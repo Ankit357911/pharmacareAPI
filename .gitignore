@@ -1,0 +1,41 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vs/
+.vscode/
+*.db
+*.DS_Store
+*.log
+*.pdb
+*.cache
+*.config
+*.ide
+*.ncrunch*
+*.resharper*
+*.sln.ide
+*.sln.iml
+*.sln
+TestResults/
+packages/
+# NuGet
+*.nupkg
+# Azure
+*.azure*
+# Rider
+.idea/
+# Visual Studio Code
+.vscode/
+# Windows
+Thumbs.db
+desktop.ini
+# macOS
+.DS_Store
+# Linux
+*~
+# Others
+debug/
+release/
