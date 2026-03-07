@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using pharmacareAPI.Data;
 
@@ -11,9 +12,11 @@ using pharmacareAPI.Data;
 namespace pharmacareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260305143200_AddTransactionItems")]
+    partial class AddTransactionItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,69 +24,6 @@ namespace pharmacareAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("pharmacareAPI.Models.Earning", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Earnings")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal>("Investment")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<DateTime>("PeriodEnd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("PeriodStart")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PeriodType")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Profit")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PeriodType", "PeriodStart", "PeriodEnd")
-                        .IsUnique();
-
-                    b.ToTable("Earnings");
-                });
-
-            modelBuilder.Entity("pharmacareAPI.Models.Event", b =>
-                {
-                    b.Property<int>("EventID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventID"));
-
-                    b.Property<int>("DiscountPercentage")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EventName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("MedicineOrCategory")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("EventID");
-
-                    b.ToTable("Events");
-                });
 
             modelBuilder.Entity("pharmacareAPI.Models.Medicine", b =>
                 {
@@ -289,13 +229,13 @@ namespace pharmacareAPI.Migrations
             modelBuilder.Entity("pharmacareAPI.Models.TransactionItem", b =>
                 {
                     b.HasOne("pharmacareAPI.Models.Medicine", "Medicine")
-                        .WithMany("TransactionItems")
+                        .WithMany()
                         .HasForeignKey("MedicineId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("pharmacareAPI.Models.Transaction", "Transaction")
-                        .WithMany("TransactionItems")
+                        .WithMany()
                         .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -305,19 +245,9 @@ namespace pharmacareAPI.Migrations
                     b.Navigation("Transaction");
                 });
 
-            modelBuilder.Entity("pharmacareAPI.Models.Medicine", b =>
-                {
-                    b.Navigation("TransactionItems");
-                });
-
             modelBuilder.Entity("pharmacareAPI.Models.MedicineCategory", b =>
                 {
                     b.Navigation("Medicines");
-                });
-
-            modelBuilder.Entity("pharmacareAPI.Models.Transaction", b =>
-                {
-                    b.Navigation("TransactionItems");
                 });
 #pragma warning restore 612, 618
         }

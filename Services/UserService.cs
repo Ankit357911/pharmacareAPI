@@ -58,7 +58,10 @@ namespace pharmacareAPI.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.AccountID.ToString()),
-                new Claim(ClaimTypes.Role, user.AccountType.ToString())
+                new Claim(ClaimTypes.Role, user.AccountType.ToString()),
+                new Claim("FullName", user.FullName),
+                new Claim("Email", user.Email),
+                new Claim("MobileNumber", user.MobileNumber)
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
