@@ -10,11 +10,11 @@ namespace pharmacareAPI.Models
 
         // FK Transaction
         public int TransactionId { get; set; }
-        public Transaction Transaction { get; set; }
+        public required Transaction Transaction { get; set; }
 
         // FK Medicine
         public int MedicineId { get; set; }
-        public Medicine Medicine { get; set; }
+        public required Medicine Medicine { get; set; }
 
         [Required]
         public int Quantity { get; set; }

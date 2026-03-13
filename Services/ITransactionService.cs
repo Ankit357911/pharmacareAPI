@@ -1,0 +1,10 @@
+﻿using pharmacareAPI.DTOs;
+namespace pharmacareAPI.Services
+{
+    public interface ITransactionService
+    {
+        Task<TransactionResponseDto> CreateTransactionAsync(int accountId, CreateTransactionDto dto);
+        Task<TransactionResponseDto?> GetTransactionByCodeAsync(string transactionCode);
+        Task<List<TransactionResponseDto>> GetUserTransactionsAsync(int accountId, int page = 1, int pageSize = 10);
+    }
+}

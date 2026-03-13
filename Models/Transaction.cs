@@ -10,7 +10,7 @@ namespace pharmacareAPI.Models
 
         [Required]
         [MaxLength(255)]
-        public string TransactionCode { get; set; }
+        public required string TransactionCode { get; set; }
 
         [Required]
         public DateTime TransactionDate { get; set; }
@@ -18,7 +18,7 @@ namespace pharmacareAPI.Models
         // Foreign Key to User
         public int AccountId { get; set; }
 
-        public User Account { get; set; }
+        public required User Account { get; set; }
 
         [MaxLength(255)]
         public string? CustomerName { get; set; }
