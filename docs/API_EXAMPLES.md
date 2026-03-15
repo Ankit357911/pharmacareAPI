@@ -4,6 +4,8 @@ All protected endpoints require:
 
 `Authorization: Bearer <JWT_TOKEN>`
 
+Admin-only endpoints additionally require an `Admin` role token.
+
 ## 1) Login
 
 `POST /api/Users/login`
@@ -40,6 +42,18 @@ Request:
 }
 ```
 
+Response (example):
+
+```json
+{
+  "accountId": 12,
+  "fullName": "John Staff",
+  "mobileNumber": "9811111111",
+  "email": "john.staff@example.com",
+  "accountType": "Staff"
+}
+```
+
 ## 3) Upsert Medicine
 
 `POST /api/Medicines/upsert`
@@ -62,6 +76,18 @@ Request:
 
 `GET /api/Transactions/recent?take=8`
 
+Response returns flattened rows used by the history grid:
+- `transactionDate`
+- `customerName`
+- `medicineName`
+- `quantity`
+- `totalAmount`
+
 ## 5) Current Earnings Summary
 
 `GET /api/Earnings/summary/current`
+
+Response contains:
+- weekly earnings/profit
+- monthly earnings/profit
+- current week/month date ranges

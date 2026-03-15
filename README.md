@@ -2,7 +2,7 @@
 
 `PharmaCare API` is a `.NET 10` backend for the PharmaCare desktop frontend.
 
-This project provides secure, JWT-protected endpoints for:
+This project provides JWT-protected endpoints for:
 - authentication and account management,
 - medicine inventory management,
 - transactions and dashboard analytics,
@@ -35,11 +35,20 @@ Swagger is enabled in Development mode.
 
 Use `appsettings.Example.json` as a safe template for local or deployment configuration.
 
+## Highlights
+
+- Layered architecture (`Controller` → `Service` → `Repository`)
+- Role-based authorization (`Admin`, `Staff`)
+- DTO-based API contracts (no password hash exposure)
+- Inventory, transactions, events, and earnings flows aligned with frontend requirements
+
 ---
 
 ## Frontend-required Endpoints (Implemented)
 
 > Only the necessary endpoints used by the PharmaCare frontend are listed below.
+>
+> Protected endpoints require: `Authorization: Bearer <JWT_TOKEN>`
 
 ### Auth & Users
 - `POST /api/Users/register`
@@ -90,7 +99,7 @@ Use `appsettings.Example.json` as a safe template for local or deployment config
 
 ## Status
 
-This API was refactored to replace direct SQL from frontend with secure, service-based HTTP endpoints suitable for backend architecture.
+This API was refactored from direct frontend SQL usage to secure, service-based HTTP endpoints with a professional, maintainable backend architecture.
 
 ---
 
