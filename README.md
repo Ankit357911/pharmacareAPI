@@ -90,7 +90,7 @@ Use `appsettings.Example.json` as a safe template for local or deployment config
 
 ## Status
 
-This API was refactored to replace direct SQL from frontend with secure, service-based HTTP endpoints suitable for internship/portfolio-level backend architecture.
+This API was refactored to replace direct SQL from frontend with secure, service-based HTTP endpoints suitable for backend architecture.
 
 ---
 
