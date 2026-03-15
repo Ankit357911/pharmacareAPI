@@ -140,6 +140,99 @@ namespace pharmacareAPI.Services
             return responses;
         }
 
+        public async Task<List<RecentTransactionDto>> GetRecentTransactionsAsync(int take = 10)
+        {
+            if (take <= 0)
+                take = 10;
+
+            return await _context.TransactionItems
+                .AsNoTracking()
+                .OrderByDescending(ti => ti.Transaction.TransactionDate)
+                .Take(take)
+                .Select(ti => new RecentTransactionDto
+                {
+                    TransactionDate = ti.Transaction.TransactionDate,
+                    CustomerName = ti.Transaction.CustomerName,
+                    MedicineName = ti.Medicine.Name,
+                    Quantity = ti.Quantity,
+                    TotalAmount = ti.TotalPrice
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<RecentTransactionDto>> SearchTransactionsByCustomerAsync(string customerName, int take = 50)
+        {
+            if (string.IsNullOrWhiteSpace(customerName))
+                return new List<RecentTransactionDto>();
+
+            if (take <= 0)
+                take = 50;
+
+            var pattern = $"%{customerName.Trim()}%";
+
+            return await _context.TransactionItems
+                .AsNoTracking()
+                .Where(ti => ti.Transaction.CustomerName != null && EF.Functions.Like(ti.Transaction.CustomerName, pattern))
+                .OrderByDescending(ti => ti.Transaction.TransactionDate)
+                .Take(take)
+                .Select(ti => new RecentTransactionDto
+                {
+                    TransactionDate = ti.Transaction.TransactionDate,
+                    CustomerName = ti.Transaction.CustomerName,
+                    MedicineName = ti.Medicine.Name,
+                    Quantity = ti.Quantity,
+                    TotalAmount = ti.TotalPrice
+                })
+                .ToListAsync();
+        }
+
+        public async Task<MostSoldMedicineDto?> GetMostSoldMedicineAsync()
+        {
+            return await _context.TransactionItems
+                .AsNoTracking()
+                .GroupBy(ti => ti.Medicine.Name)
+                .Select(g => new MostSoldMedicineDto
+                {
+                    MedicineName = g.Key,
+                    TotalQuantity = g.Sum(x => x.Quantity)
+                })
+                .OrderByDescending(x => x.TotalQuantity)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<WeeklyEarningsPointDto>> GetWeeklyEarningsAsync()
+        {
+            var now = DateTime.UtcNow;
+            var startOfWeek = now.AddDays(-(int)now.DayOfWeek + (int)DayOfWeek.Sunday).Date;
+            var endExclusive = startOfWeek.AddDays(7);
+
+            var rawPoints = await _context.Transactions
+                .AsNoTracking()
+                .Where(t => t.TransactionDate >= startOfWeek && t.TransactionDate < endExclusive)
+                .GroupBy(t => t.TransactionDate.Date)
+                .Select(g => new
+                {
+                    Date = g.Key,
+                    Earnings = g.Sum(x => x.GrandTotal)
+                })
+                .ToListAsync();
+
+            var earningsByDate = rawPoints.ToDictionary(x => x.Date, x => x.Earnings);
+
+            var result = new List<WeeklyEarningsPointDto>(7);
+            for (var i = 0; i < 7; i++)
+            {
+                var day = startOfWeek.AddDays(i);
+                result.Add(new WeeklyEarningsPointDto
+                {
+                    Date = day,
+                    Earnings = earningsByDate.TryGetValue(day, out var value) ? value : 0m
+                });
+            }
+
+            return result;
+        }
+
         private async Task UpdateEarningsAsync(decimal investment, decimal earnings, decimal profit)
         {
             var now = DateTime.UtcNow;

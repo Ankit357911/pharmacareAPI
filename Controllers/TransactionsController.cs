@@ -17,9 +17,9 @@ namespace pharmacareAPI.Controllers
             _transactionService = transactionService;
         }
 
-        /// <summary>
+        
         /// Create a new transaction/bill
-        /// </summary>
+        
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateTransaction([FromBody] CreateTransactionDto dto)
@@ -44,9 +44,9 @@ namespace pharmacareAPI.Controllers
             }
         }
 
-        /// <summary>
+        
         /// Get transaction details by transaction code
-        /// </summary>
+      
         [Authorize]
         [HttpGet("{code}")]
         public async Task<IActionResult> GetTransactionByCode(string code)
@@ -59,9 +59,9 @@ namespace pharmacareAPI.Controllers
             return Ok(result);
         }
 
-        /// <summary>
+        
         /// Get current user's transactions with pagination
-        /// </summary>
+    
         [Authorize]
         [HttpGet("my-transactions")]
         public async Task<IActionResult> GetMyTransactions([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
@@ -74,6 +74,57 @@ namespace pharmacareAPI.Controllers
                 return BadRequest("Invalid pagination parameters.");
 
             var result = await _transactionService.GetUserTransactionsAsync(accountId, page, pageSize);
+            return Ok(result);
+        }
+
+       
+        /// Get recent transactions (flattened for history grid)
+       
+        [Authorize]
+        [HttpGet("recent")]
+        public async Task<IActionResult> GetRecentTransactions([FromQuery] int take = 10)
+        {
+            if (take < 1 || take > 100)
+                return BadRequest("take must be between 1 and 100.");
+
+            var result = await _transactionService.GetRecentTransactionsAsync(take);
+            return Ok(result);
+        }
+
+        
+        /// Search transactions by customer name (flattened for history grid)
+       
+        [Authorize]
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchTransactions([FromQuery] string customerName, [FromQuery] int take = 50)
+        {
+            if (string.IsNullOrWhiteSpace(customerName))
+                return BadRequest("customerName is required.");
+
+            if (take < 1 || take > 200)
+                return BadRequest("take must be between 1 and 200.");
+
+            var result = await _transactionService.SearchTransactionsByCustomerAsync(customerName, take);
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("most-sold")]
+        public async Task<IActionResult> GetMostSoldMedicine()
+        {
+            var result = await _transactionService.GetMostSoldMedicineAsync();
+
+            if (result == null)
+                return NotFound("No sales data available.");
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("weekly-earnings")]
+        public async Task<IActionResult> GetWeeklyEarnings()
+        {
+            var result = await _transactionService.GetWeeklyEarningsAsync();
             return Ok(result);
         }
     }

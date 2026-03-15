@@ -27,6 +27,24 @@ namespace pharmacareAPI.Repositories
                 .FirstOrDefaultAsync(u => u.MobileNumber == mobileNumber);
         }
 
+        public async Task<User?> GetByIdAsync(int accountId)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.AccountID == accountId);
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteUserAsync(User user)
+        {
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> AdminExistsAsync()
         {
             return await _context.Users
